@@ -1,7 +1,5 @@
 # APM Pulse
 
-<img src='./docs/mouse.png' width="192" height="192" alt="Logo" />
-
 Real-time, game-style APM counter for your VS Code status bar.
 
 ## Features
