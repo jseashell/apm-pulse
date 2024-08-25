@@ -1,49 +1,80 @@
 {
-  "name": "vsc-apm-pulse",
+  "name": "apm-pulse",
   "displayName": "APM Pulse",
-  "description": "Real-time, game-style APM counter for your VS Code status bar",
+  "description": "Game-style APM counter for your VS Code status bar",
   "icon": "docs/logo.png",
-  "version": "0.1.0",
-  "author": "jseashell",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jseashell/vsc-apm-pulse.git"
-  },
-  "license": "MIT",
-  "main": "./dist/extension.js",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.92.0",
-    "node": ">=20.16.0"
+    "node": ">=20.17.0"
   },
-  "activationEvents": [
-    "onStartupFinished"
-  ],
   "categories": [
     "Other",
     "Visualization"
   ],
-  "keywords": [
-    "vsc",
-    "extension",
-    "ext",
-    "apm"
+  "activationEvents": [
+    "onStartupFinished"
   ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "apm-pulse.resetTotals",
+        "title": "APM Pulse: Reset Totals"
+      },
+      {
+        "command": "apm-pulse.showTotals",
+        "title": "APM Pulse: Show Totals"
+      }
+    ],
+    "configuration": {
+      "title": "APM Pulse",
+      "properties": {
+        "apm-pulse.alignment": {
+          "type": "string",
+          "default": "Left",
+          "enum": [
+            "Left",
+            "Right"
+          ],
+          "description": "Horizontal alignment in the status bar."
+        }
+      }
+    }
+  },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
-    "lint": "eslint src --ext ts",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint --ext=.ts src",
     "test": "vscode-test"
   },
   "devDependencies": {
     "@types/vscode": "^1.92.0",
-    "@types/node": "20.x",
-    "typescript": "^5.4.5",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "22.x",
+    "@typescript-eslint/eslint-plugin": "^8.2.0",
+    "@typescript-eslint/parser": "^8.2.0",
+    "eslint": "^9.9.1",
+    "typescript": "^5.5.4",
     "ts-loader": "^9.5.1",
-    "webpack": "^5.92.1",
+    "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
-    "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.4.0"
-  }
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  },
+  "author": "jseashell",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jseashell/apm-pulse.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "VS Code Extensions",
+    "APM"
+  ]
 }
