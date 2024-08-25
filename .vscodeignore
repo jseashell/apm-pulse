@@ -3,6 +3,8 @@ out/**
 node_modules/**
 src/**
 .gitignore
+.nvmrc
+.prettier*
 webpack.config.js
 **/tsconfig.json
 **/*.ts

@@ -7,7 +7,7 @@
   "author": "John Schellinger",
   "repository": {
     "type": "https",
-    "url": "https://github.com/jseashell/vsc-apm-pulse"
+    "url": "git+https://github.com/jseashell/vsc-apm-pulse.git"
   },
   "license": "MIT",
   "main": "./dist/extension.js",
