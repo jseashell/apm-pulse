@@ -1,6 +1,8 @@
-# APM Pulse
+<img src="docs/logo.png" width="256" height="256" alt="Logo" />
 
 Real-time, game-style APM counter for your VS Code status bar.
+
+![Example](docs/example.gif)
 
 ## Features
 
@@ -9,8 +11,7 @@ Real-time, game-style APM counter for your VS Code status bar.
 
 ## Attribution
 
-- Project scaffolded with [VS Code Extension Generator](https://code.visualstudio.com/api/get-started/your-first-extension)
-- Mouse logo by [@khairuman](https://www.vecteezy.com/members/khairuman) on Vecteezy
+- Mouse by sentya irma from [Noun Project](https://thenounproject.com/browse/icons/term/mouse/) (CC BY 3.0)
 
 ## License
 
