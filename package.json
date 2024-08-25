@@ -4,10 +4,10 @@
   "description": "Real-time, game-style APM counter for your VS Code status bar",
   "icon": "docs/mouse.png",
   "version": "0.0.1",
-  "author": "John Schellinger",
+  "author": "jseashell",
   "repository": {
-    "type": "https",
-    "url": "git+https://github.com/jseashell/vsc-apm-pulse.git"
+    "type": "git",
+    "url": "https://github.com/jseashell/vsc-apm-pulse.git"
   },
   "license": "MIT",
   "main": "./dist/extension.js",

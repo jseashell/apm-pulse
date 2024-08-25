@@ -6,15 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Project
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-      - name: Install project
-        run: npm ci --silent
-      - name: Build
-        run: npm run compile
-      - name: Package
-        run: npm run package
-      - name: Publish
-        run: npm publish
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci --silent
+      - run: npm run compile
