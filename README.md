@@ -6,15 +6,15 @@ Game-style APM counter for your VS Code status bar.
 
 ## Features
 
-- Displays real-time actions per minute in the bottom status
+- Displays real-time actions per minute in the bottom status bar.
   - Typing
   - Open/close file
   - Cursor location in file
   - Terminal usagebar (keyboard icon)
-- [Command palette integration](#commands)
-- [Customizable settings](#settings)
+- Command palette integration
+- Customizable settings
 
-### Commands
+## Commands
 
 The following commands are available through the VS Code command palette (Ctrl+Shift+P).
 
@@ -23,7 +23,7 @@ The following commands are available through the VS Code command palette (Ctrl+S
 | Reset totals | Resets the APM counter's total stat accumulation mechanism. |
 | Show totals  | Displays a message with your APM stats.                     |
 
-### Settings
+## Settings
 
 The following settings are available in the user settings screen in Extensions > APM Pulse.
 
