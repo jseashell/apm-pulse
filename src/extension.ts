@@ -78,19 +78,25 @@ function resetTotals() {
  */
 function showTotalsInformationMessage() {
   let time: string;
-  const ms = totals.start - Date.now();
-  const hours = Math.floor(ms / 3600000);
-  const minutes = Math.floor((ms % 3600000) / 60000);
-  const seconds = Math.floor((ms % 60000) / 1000);
+  const ms = Date.now() - totals.start;
 
-  if (hours > 0) {
-    time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  if (ms > 90000) {
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+
+    if (hours > 0) {
+      time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    } else {
+      time = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    const totalApm = totals.actions / (ms / 1000 / 60);
+    window.showInformationMessage(`${Math.floor(totalApm)} APM over ${time}`);
   } else {
-    time = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    const diff = (90000 - ms) / 1000;
+    window.showInformationMessage(`Too soon! Wait ${Math.ceil(diff)}s...`);
   }
-
-  const totalApm = totals.actions / (ms / 1000 / 60);
-  window.showInformationMessage(`${totalApm} APM over ${time}`);
 }
 
 /**
