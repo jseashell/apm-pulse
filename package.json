@@ -3,7 +3,7 @@
   "displayName": "APM Pulse",
   "description": "Real-time, game-style APM counter for your VS Code status bar",
   "icon": "docs/mouse.png",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "jseashell",
   "repository": {
     "type": "git",
