@@ -77,25 +77,20 @@ function resetTotals() {
  * Shows a info message containing total stats
  */
 function showTotalsInformationMessage() {
-  () => {
-    let time: string;
-    const ms = totals.start - Date.now();
-    const hours = Math.floor(ms / 3600000);
-    const minutes = Math.floor((ms % 3600000) / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
+  let time: string;
+  const ms = totals.start - Date.now();
+  const hours = Math.floor(ms / 3600000);
+  const minutes = Math.floor((ms % 3600000) / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
 
-    if (hours > 0) {
-      time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(
-        2,
-        '0',
-      )}`;
-    } else {
-      time = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
+  if (hours > 0) {
+    time = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  } else {
+    time = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
 
-    const totalApm = totals.actions / (ms / 1000 / 60);
-    window.showInformationMessage(`${totalApm} APM over ${time}`);
-  };
+  const totalApm = totals.actions / (ms / 1000 / 60);
+  window.showInformationMessage(`${totalApm} APM over ${time}`);
 }
 
 /**
