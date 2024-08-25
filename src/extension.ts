@@ -1,74 +1,56 @@
-import { commands, ExtensionContext, StatusBarAlignment, StatusBarItem, window } from 'vscode';
+import { ExtensionContext, StatusBarAlignment, StatusBarItem, window } from 'vscode';
 
 let statusBarItem: StatusBarItem;
-let actionCounter = 0;
 
-let start: Date;
 let apmInterval: NodeJS.Timeout;
+const rollingWindowMillis = 4000;
+const actionTimestamps: number[] = [];
 
+/** VS Code extension entry point */
 export function activate(context: ExtensionContext) {
-  start = new Date();
-
-  const commandId = 'vsc-apm.apm';
-  context.subscriptions.push(
-    commands.registerCommand(commandId, () => {
-      const apm = calculate();
-      window.showInformationMessage(`${apm} APM!
-`);
-    }),
-  );
-
   statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
-  statusBarItem.command = commandId;
+  statusBarItem.name = 'VSC APM';
   context.subscriptions.push(statusBarItem);
 
-  context.subscriptions.push(window.onDidChangeActiveTextEditor(tick));
-  // context.subscriptions.push(window.onDidChangeVisibleTextEditors(tick));
-  // context.subscriptions.push(window.onDidChangeTextEditorSelection(tick));
-  // context.subscriptions.push(window.onDidChangeTextEditorVisibleRanges(tick));
-  // context.subscriptions.push(window.onDidChangeTextEditorOptions(tick));
-  // context.subscriptions.push(window.onDidChangeTextEditorViewColumn(tick));
-  // context.subscriptions.push(window.onDidChangeVisibleNotebookEditors(tick));
-  // context.subscriptions.push(window.onDidChangeActiveNotebookEditor(tick));
-  // context.subscriptions.push(window.onDidChangeNotebookEditorSelection(tick));
-  // context.subscriptions.push(window.onDidChangeNotebookEditorVisibleRanges(tick));
-  // context.subscriptions.push(window.onDidChangeActiveTerminal(tick));
-  // context.subscriptions.push(window.onDidOpenTerminal(tick));
-  // context.subscriptions.push(window.onDidCloseTerminal(tick));
-  // context.subscriptions.push(window.onDidChangeTerminalState(tick));
-  // context.subscriptions.push(window.onDidChangeWindowState(tick));
-  // context.subscriptions.push(window.onDidChangeActiveTerminal(tick));
-  // context.subscriptions.push(window.onDidChangeTextEditorSelection(tick));
+  context.subscriptions.push(window.onDidChangeActiveTextEditor(recordAction)); // typing
+  context.subscriptions.push(window.onDidChangeVisibleTextEditors(recordAction));
+  context.subscriptions.push(window.onDidChangeTextEditorSelection(recordAction));
+  // context.subscriptions.push(window.onDidChangeTextEditorVisibleRanges(recordAction));
+  // context.subscriptions.push(window.onDidChangeTextEditorOptions(recordAction));
+  // context.subscriptions.push(window.onDidChangeTextEditorViewColumn(recordAction));
+  // context.subscriptions.push(window.onDidChangeVisibleNotebookEditors(recordAction));
+  // context.subscriptions.push(window.onDidChangeActiveNotebookEditor(recordAction));
+  // context.subscriptions.push(window.onDidChangeNotebookEditorSelection(recordAction));
+  // context.subscriptions.push(window.onDidChangeNotebookEditorVisibleRanges(recordAction));
+  context.subscriptions.push(window.onDidChangeActiveTerminal(recordAction));
+  context.subscriptions.push(window.onDidOpenTerminal(recordAction));
+  context.subscriptions.push(window.onDidCloseTerminal(recordAction));
+  context.subscriptions.push(window.onDidChangeTerminalState(recordAction));
+  context.subscriptions.push(window.onDidChangeWindowState(recordAction));
+  context.subscriptions.push(window.onDidChangeActiveTerminal(recordAction));
+  context.subscriptions.push(window.onDidChangeTextEditorSelection(recordAction));
 
   apmInterval = setInterval(() => {
-    const apm = calculate();
-    const time = formatMilliseconds(start.getTime());
-    statusBarItem.text = '$(keyboard)  ' + Math.floor(apm) + ' (' + time + ')';
+    const val = Math.floor(apm());
+
+    // $(icon_name) is special vsc extension syntax.
+    // icons here: https://code.visualstudio.com/api/references/icons-in-labels#icon-listing
+    statusBarItem.text = '$(keyboard) ' + val;
   }, 1000);
 
   statusBarItem.show();
 }
 
-function formatMilliseconds(ms: number) {
-  const hours = Math.floor(ms / 3600000); // 1 hour = 3600000 milliseconds
-  const minutes = Math.floor((ms % 3600000) / 60000); // Remaining minutes
-  const seconds = Math.floor((ms % 60000) / 1000); // Remaining seconds
-
-  if (hours > 0) {
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  } else {
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  }
+/** @returns the user's apm */
+function apm(): number {
+  const now = Date.now();
+  const recentActions = actionTimestamps.filter((ts) => ts > now - rollingWindowMillis);
+  const apm = (recentActions.length / 10) * 60;
+  return apm;
 }
 
-export function deactivate() {
-  clearInterval(apmInterval);
-}
-
-const actionTimestamps: number[] = [];
-const rollingWindowMillis = 60000;
-
-function tick() {
+/** records an action in {@link actionTimestamps} */
+function recordAction() {
   const now = Date.now();
   actionTimestamps.push(now);
 
@@ -77,9 +59,7 @@ function tick() {
   }
 }
 
-function calculate(): number {
-  const now = Date.now();
-  const recentActions = actionTimestamps.filter((ts) => ts > now - rollingWindowMillis);
-  const apm = (recentActions.length / (rollingWindowMillis / 1000)) * 60;
-  return apm;
+/** VS Code extension clean up */
+export function deactivate() {
+  clearInterval(apmInterval);
 }

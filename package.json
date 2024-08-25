@@ -1,51 +1,38 @@
 {
-  "name": "vsc-apm",
-  "description": "APM counter for VS Code",
+  "name": "vsc-apm-pulse",
+  "displayName": "APM Pulse",
+  "description": "Real-time, game-style APM counter for your VS Code status bar",
+  "icon": "docs/mouse.png",
   "version": "0.0.1",
   "author": "John Schellinger",
+  "repository": {
+    "type": "https",
+    "url": "https://github.com/jseashell/vsc-apm-pulse"
+  },
   "license": "MIT",
+  "main": "./dist/extension.js",
   "engines": {
-    "vscode": "^1.92.0"
+    "vscode": "^1.92.0",
+    "node": ">=20.16.0"
   },
   "activationEvents": [
     "onStartupFinished"
   ],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "vsc-apm.apm",
-        "title": "APM"
-      }
-    ],
-    "icons": {
-      "mouse-logo": {
-        "description": "Mouse icon",
-        "default": {
-          "fontPath": "myiconfont.woff",
-          "fontCharacter": "\\E001"
-        }
-      }
-    }
-  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test"
   },
   "devDependencies": {
     "@types/vscode": "^1.92.0",
-    "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^7.14.1",
-    "@typescript-eslint/parser": "^7.11.0",
-    "eslint": "^8.57.0",
     "typescript": "^5.4.5",
     "ts-loader": "^9.5.1",
     "webpack": "^5.92.1",
