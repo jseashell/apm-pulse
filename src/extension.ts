@@ -18,6 +18,8 @@ const totals = { start: 0, actions: 0 };
 const rollingActionTimestamps: number[] = [];
 /** previous n millis in which to calculate actions per minute */
 const rollingWindow = 4000;
+/** icon id */
+let icon = 'keyboard';
 
 /**
  * VS Code extension entry point
@@ -34,31 +36,30 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(workspace.onDidChangeConfiguration((event) => handleConfigChanges(event)));
 
   // Create the UI
-  const config = workspace.getConfiguration('apm-pulse');
+  const config = workspace.getConfiguration('APM Pulse');
   const alignOpt = config.get('alignment');
   statusBarItem = window.createStatusBarItem(alignOpt == 'Right' ? StatusBarAlignment.Right : StatusBarAlignment.Left);
   statusBarItem.name = 'APM Pulse';
 
   // Setup change events
   context.subscriptions.push(statusBarItem);
+  context.subscriptions.push(window.onDidChangeWindowState(recordAction));
   context.subscriptions.push(window.onDidChangeActiveTextEditor(recordAction));
-  context.subscriptions.push(window.onDidChangeVisibleTextEditors(recordAction));
+  // context.subscriptions.push(window.onDidChangeVisibleTextEditors(recordAction));
   context.subscriptions.push(window.onDidChangeTextEditorSelection(recordAction));
-  context.subscriptions.push(window.onDidChangeTextEditorVisibleRanges(recordAction));
-  context.subscriptions.push(window.onDidChangeTextEditorOptions(recordAction));
+  // context.subscriptions.push(window.onDidChangeTextEditorVisibleRanges(recordAction));
+  // context.subscriptions.push(window.onDidChangeTextEditorOptions(recordAction));
   context.subscriptions.push(window.onDidChangeTextEditorViewColumn(recordAction));
   context.subscriptions.push(window.onDidChangeActiveTerminal(recordAction));
   context.subscriptions.push(window.onDidOpenTerminal(recordAction));
   context.subscriptions.push(window.onDidCloseTerminal(recordAction));
-  context.subscriptions.push(window.onDidChangeTerminalState(recordAction));
+  // context.subscriptions.push(window.onDidChangeTerminalState(recordAction));
   context.subscriptions.push(window.onDidChangeWindowState(recordAction));
   context.subscriptions.push(window.onDidChangeActiveTerminal(recordAction));
-  context.subscriptions.push(window.onDidChangeTextEditorSelection(recordAction));
 
   // Setup 1s interval to update the UI
   interval = setInterval(() => {
-    const val = Math.floor(apm());
-    statusBarItem.text = '$(keyboard) ' + val; // $(icon_name) is vsc syntax. icons here: https://code.visualstudio.com/api/references/icons-in-labels#icon-listing
+    statusBarItem.text = `$(${icon}) ${apm()}`; // $(icon_name) is vsc syntax. icons here: https://code.visualstudio.com/api/references/icons-in-labels#icon-listing
   }, 1000);
 
   // Show the UI. Do this last.
@@ -120,8 +121,8 @@ function recordAction(): void {
 function apm(): number {
   const now = Date.now();
   const recentActions = rollingActionTimestamps.filter((ts) => ts > now - rollingWindow);
-  const apm = (recentActions.length / 10) * 60;
-  return apm;
+  const apm = (recentActions.length / (rollingWindow / 1000)) * 60;
+  return Math.floor(apm);
 }
 
 /**
@@ -129,14 +130,34 @@ function apm(): number {
  * @param event config change event
  */
 function handleConfigChanges(event: ConfigurationChangeEvent): void {
-  if (event.affectsConfiguration('apm-pulse.alignment')) {
-    const alignOpt = workspace.getConfiguration('apm-pulse').get('alignment');
-    if (statusBarItem) statusBarItem.dispose();
-    statusBarItem = window.createStatusBarItem(
-      alignOpt == 'Right' ? StatusBarAlignment.Right : StatusBarAlignment.Left,
-    );
-    statusBarItem.show();
-  }
+  const config = workspace.getConfiguration('APM Pulse');
+
+  const alignOpt = config.get('alignment');
+  const priorityOpt = config.get('priority');
+
+  if (statusBarItem) statusBarItem.dispose();
+
+  statusBarItem = window.createStatusBarItem(
+    alignOpt == 'Right' ? StatusBarAlignment.Right : StatusBarAlignment.Left,
+    priorityOpt == 'Low' ? 0 : priorityOpt == 'Medium' ? 999 : /* High */ 999999,
+  );
+
+  const iconOpt: string = config.get('customIcon') as string;
+  const map: Record<string, string> = {
+    Beaker: 'beaker',
+    Computer: 'device-desktop',
+    Extension: 'extensions',
+    Keyboard: 'keyboard',
+    Lightbulb: 'lightbulb',
+    Pencil: 'edit',
+    Phone: 'device-mobile',
+    Step: 'debug-step-over',
+  };
+
+  icon = map[iconOpt] ?? map.Keyboard;
+  statusBarItem.text = `$(${icon}) ${apm()}`;
+
+  statusBarItem.show();
 }
 
 /**

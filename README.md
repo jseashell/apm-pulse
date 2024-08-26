@@ -27,9 +27,11 @@ The following commands are available through the VS Code command palette (Ctrl+S
 
 The following settings are available in the user settings screen in Extensions > APM Pulse.
 
-| Setting   | Description                             |
-| :-------- | :-------------------------------------- |
-| Alignment | Horizontal alignment in the status bar. |
+| Setting     | Description                                                                                              |
+| :---------- | :------------------------------------------------------------------------------------------------------- |
+| Alignment   | Horizontal alignment in the status bar.                                                                  |
+| Custom Icon | For when the default icon clashes with another status bar item.                                          |
+| Priority    | A higher priority aligns the extension closer to the edge of the window in relation to other extensions. |
 
 ## License
 

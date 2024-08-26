@@ -3,7 +3,7 @@
   "displayName": "APM Pulse",
   "description": "Game-style APM counter for your VS Code status bar",
   "icon": "docs/logo.png",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "engines": {
     "vscode": "^1.92.0",
     "node": ">=20.17.0"
@@ -30,7 +30,7 @@
     "configuration": {
       "title": "APM Pulse",
       "properties": {
-        "apm-pulse.alignment": {
+        "APM Pulse.alignment": {
           "type": "string",
           "default": "Left",
           "enum": [
@@ -38,6 +38,29 @@
             "Right"
           ],
           "description": "Horizontal alignment in the status bar."
+        },
+        "APM Pulse.customIcon": {
+          "type": "string",
+          "default": "Keyboard",
+          "enum": [
+            "Beaker",
+            "Computer",
+            "Extension",
+            "Lightbulb",
+            "Pencil",
+            "Phone",
+            "Step"
+          ],
+          "description": "For when the default icon clashes with another status bar item."
+        },
+        "APM Pulse.priority": {
+          "type": "string",
+          "default": "Low",
+          "enum": [
+            "Medium",
+            "High"
+          ],
+          "description": "A higher priority aligns the extension closer to the edge of the window in relation to other extensions."
         }
       }
     }
